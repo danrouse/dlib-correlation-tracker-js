@@ -30,16 +30,16 @@ drectangle update(
 }
 
 EMSCRIPTEN_BINDINGS(my_module) {
-  class_<array2d<double>>("array2d")
+  class_<array2d<double>>("Array2D")
     .constructor<>()
     .constructor<long, long>()
-    .function("set_size", &array2d<double>::set_size)
+    .function("setSize", &array2d<double>::set_size)
     .function("set", &array2d_set)
     .property("width", &array2d<double>::nc)
     .property("height", &array2d<double>::nr)
     ;
 
-  class_<drectangle>("rect")
+  class_<drectangle>("Rectangle")
     .constructor<double, double, double, double>()
     .property("left", select_const(&drectangle::left))
     .property("top", select_const(&drectangle::top))
@@ -49,7 +49,8 @@ EMSCRIPTEN_BINDINGS(my_module) {
     .property("height", &drectangle::height)
     ;
 
-  class_<correlation_tracker>("correlationTracker")
+  class_<correlation_tracker>("CorrelationTracker")
+    .constructor<>()
     .constructor<unsigned long>()
     .constructor<unsigned long, unsigned long>()
     .constructor<unsigned long, unsigned long, unsigned long>()

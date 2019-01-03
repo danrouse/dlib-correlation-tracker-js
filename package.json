@@ -1,0 +1,26 @@
+{
+  "name": "dlib-correlation-tracker-js",
+  "version": "1.0.0",
+  "description": "Bindings to dlib correlation_tracker module",
+  "main": "dist/binding.js",
+  "types": "types.d.ts",
+  "scripts": {
+    "build": "emcc --bind -s WASM=0 -s ALLOW_MEMORY_GROWTH=1 -s MODULARIZE=1 -s FILESYSTEM=0 --memory-init-file 0 -s ENVIRONMENT=web -O3 -o dist/binding.js binding.cpp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danrouse/dlib-correlation-tracker-js.git"
+  },
+  "keywords": [
+    "dlib",
+    "emscripten",
+    "correlation",
+    "tracking"
+  ],
+  "author": "Dan Rouse <dan@rouse.house>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danrouse/dlib-correlation-tracker-js/issues"
+  },
+  "homepage": "https://github.com/danrouse/dlib-correlation-tracker-js#readme"
+}
