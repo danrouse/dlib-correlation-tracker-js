@@ -1,6 +1,6 @@
 {
   "name": "dlib-correlation-tracker-js",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Bindings to dlib correlation_tracker module",
   "main": "lib-node.js",
   "browser": "lib-browser.js",
