@@ -4,14 +4,13 @@
   "description": "Bindings to dlib correlation_tracker module",
   "main": "lib-node.js",
   "browser": "lib-browser.js",
-  "types": "lib-browser.d.ts",
   "scripts": {
     "tsc": "tsc",
     "emcc:base": "emcc --bind -s MODULARIZE=1 -O3 binding.cpp",
     "emcc:browser": "npm run emcc:base -- -s FILESYSTEM=0 -s ALLOW_MEMORY_GROWTH=1 --memory-init-file 0 -s ENVIRONMENT=web -o dist/binding-browser.js",
     "emcc:browser-ext": "npm run emcc:browser --  --pre-js browser-ext-pre-js.js",
     "emcc:node": "npm run emcc:base -- -s ENVIRONMENT=node -o dist/binding-node.js",
-    "build": "npm run emcc:browser && npm run emcc:node && tsc"
+    "build": "npm run emcc:browser-ext && npm run emcc:node && tsc"
   },
   "repository": {
     "type": "git",

@@ -1,4 +1,2 @@
 import { dlib } from './lib';
-
-const lib: dlib = require('./dist/binding-node')();
-export default lib;
+export default require('./dist/binding-node') as () => dlib;

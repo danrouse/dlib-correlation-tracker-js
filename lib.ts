@@ -31,4 +31,5 @@ export interface dlib {
   HEAP8: Int8Array;
   _malloc(size: number): number;
   _free(pointer: number): void;
+  then(callback: Function): void;
 }

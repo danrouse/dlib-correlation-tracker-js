@@ -1,6 +1,7 @@
 import { dlib, Array2D, CorrelationTracker } from './lib';
 
-const lib: dlib = require('./dist/binding-browser')();
+const binding = require('./dist/binding-browser');
+let lib: dlib;
 
 let videoKeyInHeap: string | undefined;
 let cachedArray: Array2D | undefined;
@@ -34,12 +35,12 @@ interface Rectangle {
 export class VideoCorrelationTracker {
   video: HTMLVideoElement;
   rect: Rectangle;
-  tracker: CorrelationTracker;
+  tracker: CorrelationTracker | undefined;
 
-  static lib: dlib;
   private static ptr: number | undefined;
 
   static freeMemory() {
+    if (!lib) return;
     if (this.ptr) {
       lib._free(this.ptr);
       this.ptr = undefined;
@@ -48,7 +49,13 @@ export class VideoCorrelationTracker {
 
   static reserveMemory(video: HTMLVideoElement) {
     if (this.ptr) this.freeMemory();
-    this.ptr = lib._malloc(video.videoWidth * video.videoHeight * 4);
+    const makePtr = () => this.ptr = lib._malloc(video.videoWidth * video.videoHeight * 4);
+    if (!lib) {
+      lib = binding();
+      lib.then(makePtr);
+    } else {
+      makePtr();
+    }
   }
 
   private get videoArray2D() {
@@ -57,6 +64,7 @@ export class VideoCorrelationTracker {
   }
 
   get prediction(): Rectangle {
+    if (!this.tracker) return { x: 0, y: 0, width: 0, height: 0 };
     const rect = this.tracker.predict(this.videoArray2D);
     return {
       x: rect.left,
@@ -69,13 +77,22 @@ export class VideoCorrelationTracker {
   constructor(video: HTMLVideoElement, rect: Rectangle) {
     this.video = video;
     this.rect = rect;
-    if (!VideoCorrelationTracker.ptr) VideoCorrelationTracker.reserveMemory(video);
-    this.tracker = new lib.CorrelationTracker();
-    const _rect = new lib.Rectangle(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height);
-    this.tracker.startTrack(this.videoArray2D, _rect);
+    const loadWithLib = () => {
+      if (!VideoCorrelationTracker.ptr) VideoCorrelationTracker.reserveMemory(video);
+      const _rect = new lib.Rectangle(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height);
+      this.tracker = new lib.CorrelationTracker();
+      this.tracker.startTrack(this.videoArray2D, _rect);
+    }
+    if (!lib) {
+      lib = binding();
+      lib.then(loadWithLib);
+    } else {
+      loadWithLib();
+    }
   }
 
   update(rect: Rectangle) {
+    if (!this.tracker) return;
     const _rect = new lib.Rectangle(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height)
     this.tracker.update(this.videoArray2D, _rect);
   }
