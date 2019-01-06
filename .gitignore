@@ -1,5 +1,5 @@
 dist
-lib.js
-lib.d.ts
+lib*.js
+lib*.d.ts
 node_modules
 .vscode
